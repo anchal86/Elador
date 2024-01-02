@@ -16,13 +16,13 @@ import CartCheckout from "./components/CartCheckout";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import Signin from "./pages/Signin";
-
+import ProductPage from './components/ProductPage'
 function App() {
   return (
     <div className="App">
       <Router>
         <Nav/>
-        {/* <ProductPage/> */}
+        <ProductPage/>
         <Routes>
           <Route path="/" element={<Home />} /> 
           <Route path="/about-us" element={<AboutUs />} />
