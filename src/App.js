@@ -22,7 +22,7 @@ function App() {
     <div className="App">
       <Router>
         <Nav/>
-        <ProductPage/>
+        {/* <ProductPage/> */}
         <Routes>
           <Route path="/" element={<Home />} /> 
           <Route path="/about-us" element={<AboutUs />} />
