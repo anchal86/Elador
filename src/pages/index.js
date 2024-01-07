@@ -8,7 +8,6 @@ export {default as TrackYourOrder} from './TrackYourOrder'
 export {default as Faq} from './Faq'
 export {default as ReturnRequest} from './ReturnRequest'
 export {default as NewArrivals} from './NewArrivals'
-
 export {default as Signin} from './Signin'
 export {default as Signup} from './Signup'
 export {default as ForgotPassword} from './ForgotPassword'

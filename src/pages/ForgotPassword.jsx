@@ -4,7 +4,7 @@ import Button from '../components/Button'
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import {toast} from 'react-toastify'
 import { doc,serverTimestamp,setDoc,getDoc } from 'firebase/firestore';
-import {db} from '../Firebase'
+import {db} from '../firebase/config'
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 

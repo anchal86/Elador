@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Button2 from './Button2'
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 

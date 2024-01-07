@@ -3,11 +3,12 @@ import {AiFillEyeInvisible,AiFillEye} from 'react-icons/ai'
 import { Link } from 'react-router-dom'
 import Button from '../components/Button'
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
-import {db} from "../Firebase"
+import {db} from '../firebase/config'
 import { doc, serverTimestamp, setDoc,getDoc } from 'firebase/firestore'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import Loader from '../components/loader/Loader'
 
 export default function Signup() {
 
@@ -16,9 +17,11 @@ export default function Signup() {
   const [name,setName] = useState('')
   const [email,setEmail] = useState('')
   const [password,setPassword] = useState('')
+  const [isLoading,setIsLoading] = useState(false)
 
   async function OAuth(){
     try {
+      console.log("Clicked")
       const auth = getAuth();
       const provider = new GoogleAuthProvider();
       const userCredentials = await signInWithPopup(auth, provider)
@@ -51,6 +54,8 @@ export default function Signup() {
       if(name===''){
         throw {code:'auth/no-name'}
       }
+      setIsLoading(true)
+
       const userCredential=await createUserWithEmailAndPassword(auth, email, password)
       console.log(userCredential)
       const user = userCredential.user
@@ -64,13 +69,17 @@ export default function Signup() {
         'timestamp':serverTimestamp()
       }
 
-      await setDoc(doc(db,"users",user.uid),userDetails)
+      setIsLoading(false)
       toast.success("Registration Successful")
+      console.log("User Deatils : "+userDetails)
+      // await setDoc(doc(db,"users",user.uid),userDetails)
+      
       navigate('/')
     }catch(error){
       console.log(error)
       const msg = displayErrors(error.code)
       toast.error(msg)
+      setIsLoading(false)
     }
   }
 
@@ -87,7 +96,9 @@ export default function Signup() {
 
       case 'auth/no-name':
           return "Name is Required"
-
+      case 'auth/missing-password':
+          return "Password is Required"
+      
       default:
           return "Something Went Wrong!!"
         
@@ -95,74 +106,77 @@ export default function Signup() {
   }
 
   return (
-    <section className='mt-28'>
-      <h1 className='text-3xl font-bold text-center py-6'>Sign Up</h1>
+    <>
+    {isLoading && <Loader />}
+      <section className='mt-28'>
+        <h1 className='text-3xl font-bold text-center py-6'>Sign Up</h1>
 
-      <div className='max-w-6xl mx-4 my-5 flex justify-center sm:mx-10 flex-wrap items-center'>
-        <div className='lg:w-[50%] md:w-[67%] '>
-          <img 
-            src='https://images.unsplash.com/flagged/photo-1564767609342-620cb19b2357' 
-            className='w-full rounded-2xl'
-            alt="lock"
-          />
-        </div>
-        <div className='mx-auto w-full md:mt-6 lg:w-[40%] lg:ml-20 md:w-[67%] sm:my-5 '>
-          <form onSubmit={onSubmit}>
-          <input 
-              type='text'
-              className='w-full rounded-lg h-8 px-5 py-6 
-              border-gray-300 border-2 text-lg focus:border-blue-500 focus:outline-none
-              transition ease-in-out duration-300 mb-3'
-              placeholder='Enter Your Name'
-              onChange={(e)=>setName(e.target.value)}
+        <div className='max-w-6xl mx-4 my-5 flex justify-center sm:mx-10 flex-wrap items-center'>
+          <div className='lg:w-[50%] md:w-[67%] '>
+            <img 
+              src='https://images.unsplash.com/flagged/photo-1564767609342-620cb19b2357' 
+              className='w-full rounded-2xl'
+              alt="lock"
             />
-
+          </div>
+          <div className='mx-auto w-full md:mt-6 lg:w-[40%] lg:ml-20 md:w-[67%] sm:my-5 '>
+            <form onSubmit={onSubmit}>
             <input 
-              type='email'
-              className='w-full rounded-lg h-8 px-5 py-6 
-              border-gray-300 border-2 text-lg focus:border-blue-500 focus:outline-none
-              transition ease-in-out duration-300 mb-3'
-              placeholder='Email Address'
-              onChange={(e)=>setEmail(e.target.value)}
-            />
-
-            <div className=' relative'>
-              <input 
-                type={showPassword?'text':'password'}
+                type='text'
                 className='w-full rounded-lg h-8 px-5 py-6 
                 border-gray-300 border-2 text-lg focus:border-blue-500 focus:outline-none
                 transition ease-in-out duration-300 mb-3'
-                placeholder='Password'
-                onChange={(e)=>setPassword(e.target.value)}
+                placeholder='Enter Your Name'
+                onChange={(e)=>setName(e.target.value)}
               />
-                {showPassword?(
-                  <AiFillEye 
-                    className=' cursor-pointer absolute right-4 top-[18px] text-[18px]'
-                    onClick={()=>setShowPassword(false)}
-                  />
-                ):(
-                  <AiFillEyeInvisible 
-                    className='cursor-pointer absolute right-4 top-[18px] text-[18px]'
-                    onClick={()=>setShowPassword(true)}  
-                  />
-                )}                
-            </div>
-            <div className='flex justify-between mb-3'>
-              <p className='text-lg'>Already Have An Account?<Link to='/signin' className='font-semibold text-red-600'> Login  </Link></p>
-              <Link to='/forgotpassword' className='font-semibold text-blue-500'>Forgot Password?</Link>
-            </div>
-            
-            <Button title='Sign up' back='bg-blue-600' /> 
-            
-            <div className='flex items-center my-4 before:border-t  before:flex-1  before:border-gray-500 after:border-t after:flex-1 after:border-gray-500'>
-              <p className='font-bold mx-3'>OR</p>
-            </div>
-            
-            <Button type="button" onClick={OAuth} title='Continue With Google' back='bg-red-500' pic='google' />
-            
-          </form>
+
+              <input 
+                type='email'
+                className='w-full rounded-lg h-8 px-5 py-6 
+                border-gray-300 border-2 text-lg focus:border-blue-500 focus:outline-none
+                transition ease-in-out duration-300 mb-3'
+                placeholder='Email Address'
+                onChange={(e)=>setEmail(e.target.value)}
+              />
+
+              <div className=' relative'>
+                <input 
+                  type={showPassword?'text':'password'}
+                  className='w-full rounded-lg h-8 px-5 py-6 
+                  border-gray-300 border-2 text-lg focus:border-blue-500 focus:outline-none
+                  transition ease-in-out duration-300 mb-3'
+                  placeholder='Password'
+                  onChange={(e)=>setPassword(e.target.value)}
+                />
+                  {showPassword?(
+                    <AiFillEye 
+                      className=' cursor-pointer absolute right-4 top-[18px] text-[18px]'
+                      onClick={()=>setShowPassword(false)}
+                    />
+                  ):(
+                    <AiFillEyeInvisible 
+                      className='cursor-pointer absolute right-4 top-[18px] text-[18px]'
+                      onClick={()=>setShowPassword(true)}  
+                    />
+                  )}                
+              </div>
+              <div className='flex justify-between mb-3'>
+                <p className='text-lg'>Already Have An Account?<Link to='/signin' className='font-semibold text-red-600'> Login  </Link></p>
+                <Link to='/forgotpassword' className='font-semibold text-blue-500'>Forgot Password?</Link>
+              </div>
+              
+              <Button title='Sign up' back='bg-blue-600' /> 
+              
+              <div className='flex items-center my-4 before:border-t  before:flex-1  before:border-gray-500 after:border-t after:flex-1 after:border-gray-500'>
+                <p className='font-bold mx-3'>OR</p>
+              </div>
+              
+              <Button type="button" onClick={OAuth} title='Continue With Google' back='bg-red-500' pic='google' />
+              
+            </form>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   )
 }
