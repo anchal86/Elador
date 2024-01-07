@@ -20,7 +20,7 @@ const Header = ()=> {
   const logoutUser = () =>{
     signOut(auth).then(()=>{
       toast.info("Logout Successful");
-      navigate("/")      
+      navigate("/login")      
     }).catch((error)=>{
       toast.error("Something Went Wrong")
     })
