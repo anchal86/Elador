@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { auth } from '../../firebase/config';
 
 const Header = ()=> {
   const navigate = useNavigate();
@@ -13,7 +16,30 @@ const Header = ()=> {
     {name:"Leap7X", link:"/"},
 
   ];
+
+  const logoutUser = () =>{
+    signOut(auth).then(()=>{
+      toast.info("Logout Successful");
+      navigate("/")      
+    }).catch((error)=>{
+      toast.error("Something Went Wrong")
+    })
+
+  }
+  
   const [open, setOpen] = useState(false);
+  const [displayName,setDisplayName] = useState('');
+
+  useEffect(()=>{
+    onAuthStateChanged(auth,(user)=>{
+      if(user){
+        const uid = user.uid
+        setDisplayName(user.displayName)
+      }else{
+        setDisplayName("")
+      }
+    })
+  },[])
   return (
     <div className='shadow-md w-full fixed top-0 z-50 '>
       <div className='bg-[#0c4a6e] py-2 px-10 shodow-sm justify-between flex w-full md:items-center'>
@@ -45,8 +71,17 @@ const Header = ()=> {
           <div className='lg:ml-20 md:ml-6'>
             <li className='md:flex list-none md:ml-8 text-xl cursor-pointer font-medium md:my-0 my-7 space-x-4 md:space-x-6 '>
               <ion-icon name="search-outline" className='mx-2 text-[#082f49] hover:text-gray-500 duration-500'></ion-icon>
-              <Link to="/signup"><ion-icon name="person-circle-outline" className='mx-2 text-[#082f49] hover:text-gray-500 duration-500'></ion-icon></Link>
-              <ion-icon name="heart-outline" className='mx-2 text-[#082f49] hover:text-gray-500 duration-500 '></ion-icon>
+              
+              {!displayName && <><Link to="/signup"><ion-icon name="person-circle-outline" className='mx-2 text-[#082f49] hover:text-gray-500 duration-500'></ion-icon></Link></>}
+
+              {displayName && <>
+                <Link to="/signup">Welcome, {displayName}</Link>
+                <ion-icon name="heart-outline" className='mx-2 text-[#082f49] hover:text-gray-500 duration-500 '></ion-icon>
+                <a href="#" onClick={logoutUser}>Logout</a>
+              </>}
+              
+              
+              
               <Link to="/cart"><ion-icon name="bag-handle-outline" className='mx-2 text-[#082f49] hover:text-gray-500 duration-500'></ion-icon></Link>
             </li>
           </div>
