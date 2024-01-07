@@ -1,27 +1,20 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
-import Nav from "./components/Nav";
+import Header from "./components/header/Header";
 import Footer from "./components/Footer";
-import AboutUs from "./pages/AboutUs";
-import ContactUs from "./pages/ContectUs";
-import Return from "./pages/Return";
-import Privacy from "./pages/Privacy";
-import TermsConditions from "./pages/TermsConditions";
-import Shipping from "./pages/Shipping";
-import TrackYourOrder from "./pages/TrackYourOrder";
-import Faq from "./pages/Faq";
-import ReturnRequest from "./pages/ReturnRequest";
-import NewArrivals from "./pages/NewArrivals";
+
+import {AboutUs, ContactUs, Return, Privacy,TermsConditions,Shipping,TrackYourOrder,
+  Faq,ReturnRequest,NewArrivals,Signin,Signup,ForgotPassword
+} from './pages/'
+
+
 import CartCheckout from "./components/CartCheckout";
-import Signup from "./pages/Signup";
-import ForgotPassword from "./pages/ForgotPassword";
-import Signin from "./pages/Signin";
 import ProductPage from './components/ProductPage'
 function App() {
   return (
     <div className="App">
       <Router>
-        <Nav/>
+        <Header/>
         {/* <ProductPage/> */}
         <Routes>
           <Route path="/" element={<Home />} /> 

@@ -35,7 +35,7 @@ const Home = () => {
         </div>
         <div>
           <h1 className='font-serif text-[#344e41] font-medium text-center mt-14 text-[40px]'>SHOP BY CATEGORIES</h1>
-
+ 
           <div className='flex justify-center space-x-12 text-[#7a7873] my-5 pb-8 cursor-pointer font-semibold '>
             <p className='underline underline-offset-8 hover:underline hover:text-[#621708]'>MEN</p>
             <p className='underline underline-offset-8 hover:underline hover:text-[#621708]'>WOMEN</p>

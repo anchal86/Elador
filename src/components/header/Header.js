@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
-import Button2 from './Button2'
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
-function Nav() {
+const Header = ()=> {
   const navigate = useNavigate();
   let Links = [
     {name:"NEW ARRIVALS", link:"/new-arrivals"},
@@ -58,4 +57,4 @@ function Nav() {
 }
 
 
-export default Nav
+export default Header
