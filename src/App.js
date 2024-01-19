@@ -14,6 +14,9 @@ import {AboutUs, ContactUs, Return, Privacy,TermsConditions,Shipping,TrackYourOr
 import CartCheckout from "./components/CartCheckout";
 import ProductPage from './components/ProductPage'
 import Loader from "./components/loader/Loader";
+import Admin from "./pages/admin/Admin";
+import {AdminOnlyLink} from "./components/adminOnlyRoute/AdminOnlyRoute";
+
 function App() {
   return (
     <div className="App">
@@ -36,8 +39,15 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/signin" element={<Signin />} />
+
+          <Route path="/admin/*" element={<AdminOnlyLink><Admin /></AdminOnlyLink>} />
+
+
         </Routes>
         <Footer/>
+        
+          
+        
       </Router>
       <ToastContainer
           position="bottom-center"

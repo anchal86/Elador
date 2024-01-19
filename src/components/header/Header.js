@@ -1,12 +1,18 @@
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { auth } from '../../firebase/config';
+import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER } from '../../redux/slice/authSlice';
+import AdminOnlyRoute from '../adminOnlyRoute/AdminOnlyRoute';
+
 
 const Header = ()=> {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
+
   let Links = [
     {name:"NEW ARRIVALS", link:"/new-arrivals"},
     {name:"WOMEN", link:"/"},
@@ -20,7 +26,7 @@ const Header = ()=> {
   const logoutUser = () =>{
     signOut(auth).then(()=>{
       toast.info("Logout Successful");
-      navigate("/login")      
+      navigate("/signin")      
     }).catch((error)=>{
       toast.error("Something Went Wrong")
     })
@@ -35,8 +41,15 @@ const Header = ()=> {
       if(user){
         const uid = user.uid
         setDisplayName(user.displayName)
+
+        dispatch(SET_ACTIVE_USER({
+          email:user.email,
+          username:user.displayName,
+          userID:user.uid
+        }))
       }else{
         setDisplayName("")
+        dispatch(REMOVE_ACTIVE_USER())
       }
     })
   },[])
@@ -58,7 +71,14 @@ const Header = ()=> {
         <div onClick={()=>(setOpen(!open))} className='text-3xl absolute right-8 top-20 cursor-pointer pt-2 md:hidden'>
           <ion-icon name={open ? 'close':'menu'}></ion-icon>
         </div>
-        <ul className={`md:flex ld:mx-8 bg-white md:items-center md:pb-0 pb-4 absolute md:static md:z-auto z-[-1] md:space-x-2 md:text-[10px] lg:text-[14px] lg:space-x-8 font-serif left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${open ? 'top-28 opacity-100':'top-[-490px]'} md:opacity-100 opacity-0`}>
+        <ul className={`md:flex ld:mx-8 bg-white md:items-center md:pb-0 pb-4 absolute md:static md:z-auto z-[-1] md:space-x-2 md:text-[10px] lg:text-[14px] lg:space-x-8 font-serif left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${open ? 'top-28 opacity-100':'top-[-490px]'} md:opacity-100 opacity-0`}>          
+          <AdminOnlyRoute>
+            <Link to ="/admin/home">
+              <button className='bg-blue-500 px-3 py-2 text-white rounded-md'>
+                ADMIN
+              </button>
+            </Link>
+          </AdminOnlyRoute>
           {
             Links.map((link)=>(
               <li key={link.name} className='md:ml-4 font-medium md:my-0 my-7'>
@@ -75,7 +95,7 @@ const Header = ()=> {
               {!displayName && <><Link to="/signup"><ion-icon name="person-circle-outline" className='mx-2 text-[#082f49] hover:text-gray-500 duration-500'></ion-icon></Link></>}
 
               {displayName && <>
-                <Link to="/signup">Welcome, {displayName}</Link>
+                Welcome, {displayName}
                 <ion-icon name="heart-outline" className='mx-2 text-[#082f49] hover:text-gray-500 duration-500 '></ion-icon>
                 <a href="#" onClick={logoutUser}>Logout</a>
               </>}
